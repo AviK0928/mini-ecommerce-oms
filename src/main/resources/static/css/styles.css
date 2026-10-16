@@ -1,0 +1,290 @@
+:root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --text: #1f2933;
+    --muted: #616e7c;
+    --border: #d9dee5;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --danger: #dc2626;
+    --danger-dark: #b91c1c;
+    --success-bg: #e7f6ec;
+    --success-text: #14632f;
+    --error-bg: #fdecec;
+    --error-text: #9b1c1c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+}
+
+/* Header and tabs */
+.app-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px 0;
+}
+
+.app-header h1 {
+    margin: 0 0 12px;
+    font-size: 1.4rem;
+}
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+main {
+    max-width: 1100px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+}
+
+h2 {
+    font-size: 1.15rem;
+    margin: 0 0 12px;
+}
+
+h2:not(:first-child) {
+    margin-top: 28px;
+}
+
+/* Forms */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    align-items: end;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+label.block {
+    max-width: 360px;
+    margin-bottom: 16px;
+}
+
+input,
+select {
+    font: inherit;
+    padding: 7px 9px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    background: #ffffff;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+}
+
+select {
+    min-width: 260px;
+    max-width: 100%;
+}
+
+.stock-input,
+.qty-input {
+    width: 90px;
+}
+
+/* Buttons */
+button {
+    font: inherit;
+    padding: 8px 14px;
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+    background: var(--primary-dark);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+button.secondary {
+    background: #ffffff;
+    color: var(--primary);
+}
+
+button.secondary:hover:not(:disabled) {
+    background: #eef3fd;
+}
+
+button.danger {
+    background: var(--danger);
+    border-color: var(--danger);
+}
+
+button.danger:hover:not(:disabled) {
+    background: var(--danger-dark);
+}
+
+button.link {
+    background: none;
+    border: none;
+    color: var(--danger);
+    padding: 4px;
+}
+
+button.link:hover:not(:disabled) {
+    background: none;
+    text-decoration: underline;
+}
+
+button.tab {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    padding: 10px 14px;
+    color: var(--muted);
+}
+
+button.tab:hover:not(:disabled) {
+    background: none;
+    color: var(--text);
+}
+
+button.tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    font-weight: 600;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.hint {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+th {
+    background: #f0f2f5;
+    font-weight: 600;
+}
+
+tfoot td {
+    border-bottom: none;
+}
+
+.num {
+    text-align: right;
+}
+
+td.empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 20px;
+}
+
+.stock-hint {
+    display: block;
+    color: var(--danger);
+    font-size: 0.8rem;
+}
+
+/* Messages */
+.message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid transparent;
+}
+
+.message.success {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border-color: #b7e1c4;
+}
+
+.message.error {
+    background: var(--error-bg);
+    color: var(--error-text);
+    border-color: #f5c2c2;
+}
+
+/* Status badges */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge.placed {
+    background: #e0ecff;
+    color: #1e429f;
+}
+
+.badge.cancelled {
+    background: #eceff3;
+    color: #4b5563;
+}
+
+/* Order detail */
+.detail {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 2px solid var(--border);
+}
+
+.detail h3 {
+    margin: 0 0 8px;
+}

@@ -2,10 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mini E-commerce OMS</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/app.js" defer></script>
 </head>
 <body>
+<header class="app-header">
     <h1>Mini E-commerce OMS</h1>
-    <p>Backend is running. UI coming soon.</p>
+    <nav class="tabs" aria-label="Main sections">
+        <button type="button" class="tab active" data-tab="products">Products &amp; Inventory</button>
+        <button type="button" class="tab" data-tab="create-order">Create Order</button>
+        <button type="button" class="tab" data-tab="orders">Orders</button>
+    </nav>
+</header>
+
+<main>
+    <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+
+    <!-- Products & Inventory -->
+    <section id="products" class="panel">
+        <h2>Add product</h2>
+        <form id="product-form" class="form-grid">
+            <label>Name
+                <input name="name" required maxlength="100">
+            </label>
+            <label>SKU
+                <input name="sku" required maxlength="50">
+            </label>
+            <label>Price (₹)
+                <input name="price" type="number" required min="0.01" step="0.01">
+            </label>
+            <label>Stock quantity
+                <input name="stockQuantity" type="number" required min="0" step="1">
+            </label>
+            <button type="submit">Add product</button>
+        </form>
+
+        <h2>Products</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>SKU</th>
+                <th class="num">Price</th>
+                <th class="num">Stock</th>
+                <th>Update stock</th>
+            </tr>
+            </thead>
+            <tbody id="products-body">
+            <tr><td colspan="6" class="empty">Loading…</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Create Order -->
+    <section id="create-order" class="panel" hidden>
+        <h2>Create order</h2>
+        <form id="order-form">
+            <label class="block">Customer name
+                <input name="customerName" required maxlength="100">
+            </label>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th class="num">Price</th>
+                    <th>Quantity</th>
+                    <th class="num">Line total</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="order-items"></tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="3" class="num"><strong>Order total</strong></td>
+                    <td class="num"><strong id="order-total">₹0.00</strong></td>
+                    <td></td>
+                </tr>
+                </tfoot>
+            </table>
+
+            <div class="actions">
+                <button type="button" id="add-item" class="secondary">+ Add item</button>
+                <button type="submit">Place order</button>
+            </div>
+            <p class="hint">This total is a preview. The server recalculates prices and checks stock when the order is placed.</p>
+        </form>
+    </section>
+
+    <!-- Orders -->
+    <section id="orders" class="panel" hidden>
+        <h2>Orders</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th class="num">Total</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="orders-body">
+            <tr><td colspan="6" class="empty">Loading…</td></tr>
+            </tbody>
+        </table>
+
+        <div id="order-detail" class="detail" hidden></div>
+    </section>
+</main>
 </body>
 </html>
