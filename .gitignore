@@ -1,0 +1,21 @@
+# Build output
+target/
+
+# Local SQLite runtime data (never commit)
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# IDE / editor
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
