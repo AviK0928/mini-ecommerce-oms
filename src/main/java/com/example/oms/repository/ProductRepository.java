@@ -60,4 +60,20 @@ public class ProductRepository {
     public int updateStock(long id, int stockQuantity) {
         return jdbc.update("UPDATE products SET stock_quantity = ? WHERE id = ?", stockQuantity, id);
     }
+
+    /**
+     * Atomically deducts stock only if enough is available.
+     * The check and the deduction happen in one SQL statement, so stock can never go negative.
+     * Returns 1 on success, 0 if stock was insufficient (or the product does not exist).
+     */
+    public int decreaseStock(long id, int quantity) {
+        return jdbc.update(
+                "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ? AND stock_quantity >= ?",
+                quantity, id, quantity);
+    }
+
+    /** Adds stock back, used when an order is cancelled. */
+    public int increaseStock(long id, int quantity) {
+        return jdbc.update("UPDATE products SET stock_quantity = stock_quantity + ? WHERE id = ?", quantity, id);
+    }
 }
