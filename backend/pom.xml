@@ -15,14 +15,15 @@
     <artifactId>mini-ecommerce-oms</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>mini-ecommerce-oms</name>
-    <description>Mini e-commerce order and inventory management system</description>
+    <description>Mini e-commerce order and inventory management system (backend)</description>
 
     <properties>
         <java.version>21</java.version>
+        <jacoco.version>0.8.15</jacoco.version>
     </properties>
 
     <dependencies>
-        <!-- REST controllers + embedded Tomcat + static file serving -->
+        <!-- REST controllers + embedded Tomcat -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -54,6 +55,28 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Test coverage: instruments tests, then writes target/site/jacoco/index.html -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

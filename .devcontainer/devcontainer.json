@@ -8,8 +8,9 @@
       "mavenVersion": "3.9.10"
     }
   },
-  "forwardPorts": [8080],
+  "forwardPorts": [8080, 5500],
   "portsAttributes": {
-    "8080": { "label": "App", "onAutoForward": "notify" }
+    "8080": { "label": "Backend API", "onAutoForward": "notify" },
+    "5500": { "label": "Frontend", "onAutoForward": "notify" }
   }
 }

@@ -3,6 +3,11 @@
 A small full-stack application where an admin can manage products and inventory, place
 multi-product customer orders, and cancel orders, with all data stored in a local SQLite database.
 
+The repository has two parts:
+
+- `backend/`: Spring Boot REST API with business logic and SQLite persistence.
+- `frontend/`: plain HTML, CSS and JavaScript that calls the API.
+
 ## Features
 
 - **Products & inventory**: add products (name, SKU, price, stock), view them in a table, update stock.
@@ -14,65 +19,83 @@ multi-product customer orders, and cancel orders, with all data stored in a loca
 - **Persistence**: data survives page refreshes and server restarts.
 - Duplicate SKUs are rejected (case-insensitive).
 - Concurrent orders for the last unit cannot oversell.
-- Automated tests cover order creation and cancellation.
+- Automated tests come with a coverage report.
 
 ## Tech stack
 
-| Layer    | Technology                                              |
-|----------|---------------------------------------------------------|
-| Backend  | Java 21, Spring Boot 3.5 (Spring Web, Spring JDBC)       |
-| Database | SQLite (single local file, via `sqlite-jdbc`)           |
-| Frontend | HTML, CSS, vanilla JavaScript (`fetch`), served by Spring Boot |
-| Build    | Maven                                                   |
-| Tests    | JUnit 5, Spring Boot Test                               |
+| Layer    | Technology                                                   |
+|----------|--------------------------------------------------------------|
+| Backend  | Java 21, Spring Boot 3.5 (Spring Web, Spring JDBC)            |
+| Database | SQLite (single local file, via `sqlite-jdbc`)                |
+| Frontend | HTML, CSS, vanilla JavaScript (`fetch`), no build step       |
+| Build    | Maven                                                        |
+| Tests    | JUnit 5, Spring Boot Test, JaCoCo (coverage)                 |
 
-No separate database server, frontend server or internet connection is needed to run it.
+No separate database server, Node.js or internet connection is needed to run it.
 
 ## Requirements
 
 - **JDK 21** or newer (`java -version`)
 - **Maven 3.9** or newer (`mvn -version`)
 
+## Configuration
+
+| File | Template (committed) | Purpose |
+|------|----------------------|---------|
+| `backend/.env` | `backend/.env.example` | `SERVER_PORT`, `DB_PATH`, `CORS_ALLOWED_ORIGINS` |
+| `frontend/js/config.js` | `frontend/js/config.example.js` | `apiBaseUrl`: where the backend runs |
+
+Both local files are ignored by Git. If they are missing, the defaults shown in the templates are
+used, so the app also runs without copying them. Real environment variables override `backend/.env`.
+
 ## Run locally
 
+You need two terminals: one for the backend and one for the frontend.
+
+**Terminal 1: backend** (from the repository root)
+
 ```bash
-git clone https://github.com/AviK0928/mini-ecommerce-oms.git
-cd mini-ecommerce-oms
+cd backend
+cp .env.example .env        # Windows: copy .env.example .env
 mvn spring-boot:run
 ```
 
-Open **http://localhost:8080** in a browser.
+Wait for `Started OmsApplication`. The API is at http://localhost:8080/api/products.
 
-The first start downloads dependencies (about a minute). Stop the server with `Ctrl+C`.
-
-To run as a standalone JAR instead:
+**Terminal 2: frontend** (from the repository root)
 
 ```bash
-mvn package
-java -jar target/mini-ecommerce-oms-0.0.1-SNAPSHOT.jar
+cd frontend
+cp js/config.example.js js/config.js     # Windows: copy js\config.example.js js\config.js
+java -m jdk.httpserver -p 5500
 ```
 
-If port 8080 is busy:
+This uses the static file server built into the JDK. Open **http://127.0.0.1:5500** in a browser.
+
+Stop either server with `Ctrl+C`.
+
+### Changing ports
+
+If you change `SERVER_PORT`, also update `apiBaseUrl` in `frontend/js/config.js`. If you serve the
+frontend on another port, add that origin to `CORS_ALLOWED_ORIGINS` in `backend/.env`.
+
+## Run tests and coverage
 
 ```bash
-mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
-```
-
-## Run tests
-
-```bash
+cd backend
 mvn test
 ```
 
-The tests use their own database files under `target/`, so they never touch your data.
+- The tests use their own database files under `backend/target/`, so they never touch your data.
+- The coverage report is written to `backend/target/site/jacoco/index.html`; open it in a browser.
 
 ## Database
 
-- **Location:** `data/shop.db`, relative to the folder the app is started from. The folder and
-  file are created automatically on first start.
-- **Schema:** `src/main/resources/schema.sql` runs on every start. It only uses
+- **Location:** `DB_PATH` (default `backend/data/shop.db`). The folder and file are created
+  automatically on first start.
+- **Schema:** `backend/src/main/resources/schema.sql` runs on every start. It only uses
   `CREATE ... IF NOT EXISTS`, so existing data is never modified.
-- **Backup:** stop the app and copy `data/shop.db`. **Reset:** stop the app and delete `data/shop.db`.
+- **Backup:** stop the backend and copy the database file. **Reset:** stop the backend and delete it.
 - The database file is excluded from Git.
 
 ### Schema
@@ -122,6 +145,8 @@ POST /api/orders
 The client sends only product IDs and quantities. Prices and totals are always calculated on the
 server from database values.
 
+Only origins listed in `CORS_ALLOWED_ORIGINS` can call the API from a browser.
+
 ## How consistency is guaranteed
 
 **Placing an order** runs in a single database transaction:
@@ -152,18 +177,20 @@ one success. A test covers this.
 ## Project structure
 
 ```
-src/main/java/com/example/oms/
-  controller/   REST endpoints (HTTP only)
-  service/      business rules, validation, transactions
-  repository/   SQL via JdbcTemplate (parameterised queries)
-  model/        domain records, OrderStatus, Money helper
-  dto/          request/response objects
-  exception/    ApiException + global JSON error handler
-src/main/resources/
-  application.properties, schema.sql
-  static/       index.html, css/styles.css, js/app.js
-src/test/java/com/example/oms/
-  ProductServiceTest, OrderServiceTest
+backend/
+  pom.xml, .env.example
+  src/main/java/com/example/oms/
+    controller/   REST endpoints (HTTP only)
+    service/      business rules, validation, transactions
+    repository/   SQL via JdbcTemplate (parameterised queries)
+    model/        domain records, OrderStatus, Money helper
+    dto/          request/response objects
+    exception/    ApiException + global JSON error handler
+    config/       CORS, database folder creation
+  src/main/resources/   application.properties, schema.sql
+  src/test/java/com/example/oms/   ProductServiceTest, OrderServiceTest
+frontend/
+  index.html, css/styles.css, js/app.js, js/config.example.js
 ```
 
 ## Known limitations
@@ -173,8 +200,7 @@ src/test/java/com/example/oms/
   would limit throughput under heavy load.
 - Products cannot be edited (other than stock) or deleted.
 - No pagination, search or filtering.
-- The database path is relative to the start-up folder: starting the app from a different
-  folder uses a different `data/shop.db`.
+- A relative `DB_PATH` is resolved from the folder the backend is started in (normally `backend/`).
 
 ## Possible improvements
 

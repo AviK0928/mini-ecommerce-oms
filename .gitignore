@@ -8,6 +8,10 @@ data/
 *.db-wal
 *.db-shm
 
+# Local configuration (copy from the committed .example files)
+.env
+frontend/js/config.js
+
 # IDE / editor
 .idea/
 *.iml

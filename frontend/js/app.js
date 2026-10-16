@@ -1,5 +1,9 @@
 'use strict';
 
+/** Backend URL from js/config.js (see config.example.js). Trailing slashes are removed. */
+const API_BASE_URL = ((window.APP_CONFIG && window.APP_CONFIG.apiBaseUrl) || 'http://localhost:8080')
+    .replace(/\/+$/, '');
+
 /* ---------- State and small helpers ---------- */
 
 const state = {
@@ -61,9 +65,10 @@ async function api(path, options = {}) {
 
     let response;
     try {
-        response = await fetch(path, init);
+        response = await fetch(API_BASE_URL + path, init);
     } catch (networkError) {
-        throw new Error('Cannot reach the server. Is the backend running?');
+        throw new Error(`Cannot reach the server at ${API_BASE_URL}. Check that the backend is running `
+            + 'and that this page\'s origin is listed in the backend\'s CORS_ALLOWED_ORIGINS.');
     }
 
     const text = await response.text();
